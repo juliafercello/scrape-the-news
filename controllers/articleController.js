@@ -5,21 +5,13 @@ var cheerio = require("cheerio");
 var app = express();
 var db = require("../models");
 
-// A GET route for scraping the echoJS website
+// scrape npr tech news
 app.get("/scrape", function (req, res) {
-  // get body of html page with axios
   axios.get("https://www.npr.org/sections/technology/").then(function (response) {
-    // load into cheerio
     var $ = cheerio.load(response.data);
 
-    console.log(response.data);
-
-    // Now, we grab every h2 within an article tag, and do the following:
     $("article div").each(function (i, element) {
-      // Save an empty result object
       var result = {};
-
-      // Add the text and href of every link, and save them as properties of the result object
 
       result.title = $(this)
         .children("h2").children("a")
@@ -27,17 +19,13 @@ app.get("/scrape", function (req, res) {
       result.link = $(this)
         .children("h2").children("a")
         .attr("href");
-      result.image = $(this)
-        .children("img")
-        .attr("src");
       result.teaser = $(this)
         .children("p")
         .text();
 
-      // Create a new Article using the `result` object built from scraping
+      //Create Article Document 
       db.Article.create(result)
         .then(function (dbArticle) {
-          // View the added result in the console
           console.log(dbArticle);
         })
         .catch(function (err) {
@@ -46,61 +34,61 @@ app.get("/scrape", function (req, res) {
         });
     });
 
-    // Send a message to the client
     res.send("Scrape Complete");
   });
 });
 
-// Route for getting all Articles from the db
-app.get("/articles", function (req, res) {
-  // TODO: Finish the route so it grabs all of the articles
+// GET Articles
+app.get("/", function (req, res) {
   db.Article.find({})
     .then(function (dbArticle) {
-      res.json(dbArticle);
+      res.render("index", dbArticle);
     })
     .catch(function (err) {
-      // If an error occurs, send the error back to the client
       res.json(err);
     });
 
 });
 
-// Route for grabbing a specific Article by id, populate it with it's note
+// GET Article by id, including comments
 app.get("/articles/:id", function (req, res) {
 
-  // Finish the route so it finds one article using the req.params.id,
-  // and run the populate method with "note",
-  // then responds with the article with the note included
   db.Article.findOne({ _id: req.params.id })
-    .populate("note")
+    .populate("comments")
     .then(function (dbArticle) {
       res.json(dbArticle);
     })
     .catch(function (err) {
-      // If an error occurs, send the error back to the client
       res.json(err);
     })
 });
 
 
-// Route for saving/updating an Article's associated Note
+// POST Comments and update associated Article
 app.post("/articles/:id", function (req, res) {
 
-  // save the new note that gets posted to the Notes collection
-  // then find an article from the req.params.id
-  // and update it's "note" property with the _id of the new note
-  db.Note.create(req.body)
-    .then(function (dbNote) {
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+  console.log("reqbody" + req.body);
+
+  db.Comment.create(req.body)
+    .then(function (dbComment) {
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { comments: dbComment._id } }, { new: true });
     })
     .then(function (dbArticle) {
       res.json(dbArticle);
     })
     .catch(function (err) {
-      // If an error occurs, send it back to the client
       res.json(err);
     });
 });
 
-// Export routes for server.js to use.
+app.delete("/comments/:id", function(req,res) {
+  db.Comment.deleteOne({ _id: req.params.id })
+  .then(function (dbComment) {
+    res.json(dbComment);
+  })
+  .catch(function (err) {
+    res.json(err);
+  })
+});
+
 module.exports = app;

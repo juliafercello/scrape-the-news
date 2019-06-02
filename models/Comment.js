@@ -4,10 +4,10 @@ var connection = require("../config/connection.js");
 var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
-  // `title` is of type String
-  title: String,
-  // `body` is of type String
-  body: String
+ comment: {
+    type: String,
+    required: true
+  }
 });
 
 var Comment = mongoose.model("Comment", CommentSchema);
