@@ -6,27 +6,29 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="/assets/css/style.css" type="text/css" />
+    {{!-- <link rel="stylesheet" href="/assets/css/style.css" type="text/css" /> --}}
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Tech News Scraper!</title>
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="/assets/js/app.js"></script>
 
 </head>
 
-<body>
-
-    <div class="container bg-dark">
-        <div class="jumbotron jumbotron-fluid bg-dark">
-            <div class="container text-white ">
-                <h1 class="display-4"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Tech News Scraper!</h1>
-                <p class="lead">Tech News</p>
-            </div>
-        </div>
+<body class="bg-light">
+    <div class="alert-primary">
+        <nav class="navbar navbar-light">
+            <h1 class="display-4">Tech News Scraper!</h1>
+            <ul class="list-inline">
+                <li class="list-inline-item"><button id="scrape" class="btn btn-outline-secondary float-right">Scrape
+                        articles <i class="fa fa-newspaper-o"></i></button></li>
+                <li class="list-inline-item"><a class="btn btn-outline-secondary float-right" href="/"
+                        role="button">Home <i class="fa fa-home"></i></a></li>
+                <li class="list-inline-item"><button id="trash" class="btn btn-outline-secondary float-right">Delete
+                        articles <i class="fa fa-trash"></i></button></li>
+            </ul>
+        </nav>
     </div>
-
     {{{ body }}}
 </body>
 

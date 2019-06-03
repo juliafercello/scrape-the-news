@@ -1,16 +1,19 @@
 <div class="container">
     <div class="row">
-        <div class="card col-md-4">
+        {{#each articles}}
+        <div class="card m-3">
             <div class="card-body">
-                <h5 class="card-title">Articles</h5>
-                 <hr>
-                {{!-- <ul>
-                    {{#each burgers}}
-                    {{#unless devoured}}
-                    <li>{{burger_name}}
-                        <button class="devour btn btn-outline-dark btn-sm" data-id="{{id}}" data-eaten="{{devoured}}">Eat Me!</button></li>
-                    {{/unless}}
-                    {{/each}} --}}
-                {{!-- </ul> --}}
+                <a class="alert-primary" href={{link}} target="_blank"><h5 class="card-title">{{title}}</h5></a>
+                <p class="card-text">{{teaser}}</p>
+            </div>
+            <div class="card-body">
+
+                <a class="btn btn-outline-secondary float-right" href="/articles/{{id}}" role="button">Comments <i class="fa fa-comments"></i></a>
             </div>
         </div>
+        {{/each}}
+    </div>
+</div>
+
+
+

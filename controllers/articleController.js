@@ -41,13 +41,12 @@ app.get("/scrape", function (req, res) {
 // GET Articles
 app.get("/", function (req, res) {
   db.Article.find({})
-    .then(function (dbArticle) {
-      res.render("index", dbArticle);
+    .then(function (articles) {
+      res.render("index", { articles });
     })
     .catch(function (err) {
       res.json(err);
     });
-
 });
 
 // GET Article by id, including comments
@@ -55,14 +54,14 @@ app.get("/articles/:id", function (req, res) {
 
   db.Article.findOne({ _id: req.params.id })
     .populate("comments")
-    .then(function (dbArticle) {
-      res.json(dbArticle);
+    .then(function (article) {
+      console.log(article);
+      res.render("comments", { article });
     })
     .catch(function (err) {
       res.json(err);
     })
 });
-
 
 // POST Comments and update associated Article
 app.post("/articles/:id", function (req, res) {
@@ -81,14 +80,30 @@ app.post("/articles/:id", function (req, res) {
     });
 });
 
-app.delete("/comments/:id", function(req,res) {
+//DELETE Comment
+app.delete("/comments/:id", function (req, res) {
   db.Comment.deleteOne({ _id: req.params.id })
-  .then(function (dbComment) {
-    res.json(dbComment);
-  })
-  .catch(function (err) {
-    res.json(err);
-  })
+    .then(function (dbComment) {
+      res.json(dbComment);
+    })
+    .catch(function (err) {
+      res.json(err);
+    })
 });
+
+
+// DELETE ALL Comments and Articles
+app.delete("/", function (req, res) {
+  db.Comment.deleteMany({}).then(function (data) {
+    db.Article.deleteMany({})
+      .then(function (data) {
+        res.json(data);
+      })
+      .catch(function (err) {
+        res.json(err);
+      })
+  });
+});
+
 
 module.exports = app;
